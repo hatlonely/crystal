@@ -30,9 +30,10 @@ int main(int argc, const char *argv[]) {
         transport->open();
         uniqueid::UniqueidRequest request;
         uniqueid::UniqueidResponse response;
+        request.logid = 1234;
         request.serial = argc > 1 ? atoi(argv[1]) : 1;
         request.length = argc > 2 ? atoi(argv[2]) : 1;
-        client.uniqueid(response, 1234, request);
+        client.uniqueid(response, request);
         std::cout << ToString(response) << std::endl;
         transport->close();
     } catch (TException &te) {

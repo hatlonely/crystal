@@ -34,14 +34,6 @@ uint32_t Uniqueid_uniqueid_args::read(::apache::thrift::protocol::TProtocol* ipr
     switch (fid)
     {
       case 1:
-        if (ftype == ::apache::thrift::protocol::T_I32) {
-          xfer += iprot->readI32(this->logid);
-          this->__isset.logid = true;
-        } else {
-          xfer += iprot->skip(ftype);
-        }
-        break;
-      case 2:
         if (ftype == ::apache::thrift::protocol::T_STRUCT) {
           xfer += this->request.read(iprot);
           this->__isset.request = true;
@@ -66,11 +58,7 @@ uint32_t Uniqueid_uniqueid_args::write(::apache::thrift::protocol::TProtocol* op
   oprot->incrementRecursionDepth();
   xfer += oprot->writeStructBegin("Uniqueid_uniqueid_args");
 
-  xfer += oprot->writeFieldBegin("logid", ::apache::thrift::protocol::T_I32, 1);
-  xfer += oprot->writeI32(this->logid);
-  xfer += oprot->writeFieldEnd();
-
-  xfer += oprot->writeFieldBegin("request", ::apache::thrift::protocol::T_STRUCT, 2);
+  xfer += oprot->writeFieldBegin("request", ::apache::thrift::protocol::T_STRUCT, 1);
   xfer += this->request.write(oprot);
   xfer += oprot->writeFieldEnd();
 
@@ -90,11 +78,7 @@ uint32_t Uniqueid_uniqueid_pargs::write(::apache::thrift::protocol::TProtocol* o
   oprot->incrementRecursionDepth();
   xfer += oprot->writeStructBegin("Uniqueid_uniqueid_pargs");
 
-  xfer += oprot->writeFieldBegin("logid", ::apache::thrift::protocol::T_I32, 1);
-  xfer += oprot->writeI32((*(this->logid)));
-  xfer += oprot->writeFieldEnd();
-
-  xfer += oprot->writeFieldBegin("request", ::apache::thrift::protocol::T_STRUCT, 2);
+  xfer += oprot->writeFieldBegin("request", ::apache::thrift::protocol::T_STRUCT, 1);
   xfer += (*(this->request)).write(oprot);
   xfer += oprot->writeFieldEnd();
 
@@ -230,19 +214,18 @@ uint32_t Uniqueid_uniqueid_presult::read(::apache::thrift::protocol::TProtocol* 
   return xfer;
 }
 
-void UniqueidClient::uniqueid(UniqueidResponse& _return, const int32_t logid, const UniqueidRequest& request)
+void UniqueidClient::uniqueid(UniqueidResponse& _return, const UniqueidRequest& request)
 {
-  send_uniqueid(logid, request);
+  send_uniqueid(request);
   recv_uniqueid(_return);
 }
 
-void UniqueidClient::send_uniqueid(const int32_t logid, const UniqueidRequest& request)
+void UniqueidClient::send_uniqueid(const UniqueidRequest& request)
 {
   int32_t cseqid = 0;
   oprot_->writeMessageBegin("uniqueid", ::apache::thrift::protocol::T_CALL, cseqid);
 
   Uniqueid_uniqueid_pargs args;
-  args.logid = &logid;
   args.request = &request;
   args.write(oprot_);
 
@@ -334,7 +317,7 @@ void UniqueidProcessor::process_uniqueid(int32_t seqid, ::apache::thrift::protoc
 
   Uniqueid_uniqueid_result result;
   try {
-    iface_->uniqueid(result.success, args.logid, args.request);
+    iface_->uniqueid(result.success, args.request);
     result.__isset.success = true;
   } catch (UniqueidException &ue) {
     result.ue = ue;

@@ -30,7 +30,7 @@ namespace uniqueid {
 class UniqueidHandler : virtual public UniqueidIf {
 public:
     UniqueidHandler();
-    void uniqueid(UniqueidResponse &response, const int32_t logid, const UniqueidRequest &request);
+    void uniqueid(UniqueidResponse &response, const UniqueidRequest &request);
 
 private:
     Context *context;

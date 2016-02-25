@@ -84,7 +84,6 @@ bool Context::set_max_id(int32_t serial, int64_t max_id) {
     serials_file.close();
 
     _max_ids[serial] = max_id;
-    std::cout << _max_ids[serial] << std::endl;
 
     return true;
 }

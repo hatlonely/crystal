@@ -25,5 +25,5 @@ exception UniqueidException {
 }
 
 service Uniqueid {
-    UniqueidResponse uniqueid(1: i32 logid, 2: UniqueidRequest request) throws (1: UniqueidException ue)
+    UniqueidResponse uniqueid(1: UniqueidRequest request) throws (1: UniqueidException ue)
 }

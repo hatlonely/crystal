@@ -15,7 +15,7 @@ namespace uniqueid {
 class UniqueidIf {
  public:
   virtual ~UniqueidIf() {}
-  virtual void uniqueid(UniqueidResponse& _return, const int32_t logid, const UniqueidRequest& request) = 0;
+  virtual void uniqueid(UniqueidResponse& _return, const UniqueidRequest& request) = 0;
 };
 
 class UniqueidIfFactory {
@@ -45,42 +45,36 @@ class UniqueidIfSingletonFactory : virtual public UniqueidIfFactory {
 class UniqueidNull : virtual public UniqueidIf {
  public:
   virtual ~UniqueidNull() {}
-  void uniqueid(UniqueidResponse& /* _return */, const int32_t /* logid */, const UniqueidRequest& /* request */) {
+  void uniqueid(UniqueidResponse& /* _return */, const UniqueidRequest& /* request */) {
     return;
   }
 };
 
 typedef struct _Uniqueid_uniqueid_args__isset {
-  _Uniqueid_uniqueid_args__isset() : logid(false), request(false) {}
-  bool logid :1;
+  _Uniqueid_uniqueid_args__isset() : request(false) {}
   bool request :1;
 } _Uniqueid_uniqueid_args__isset;
 
 class Uniqueid_uniqueid_args {
  public:
 
-  static const char* ascii_fingerprint; // = "3E4EA75EE4645FBC17071FF4F3229B0A";
-  static const uint8_t binary_fingerprint[16]; // = {0x3E,0x4E,0xA7,0x5E,0xE4,0x64,0x5F,0xBC,0x17,0x07,0x1F,0xF4,0xF3,0x22,0x9B,0x0A};
+  static const char* ascii_fingerprint; // = "135D590DD05D92FC85C9D1104FF65196";
+  static const uint8_t binary_fingerprint[16]; // = {0x13,0x5D,0x59,0x0D,0xD0,0x5D,0x92,0xFC,0x85,0xC9,0xD1,0x10,0x4F,0xF6,0x51,0x96};
 
   Uniqueid_uniqueid_args(const Uniqueid_uniqueid_args&);
   Uniqueid_uniqueid_args& operator=(const Uniqueid_uniqueid_args&);
-  Uniqueid_uniqueid_args() : logid(0) {
+  Uniqueid_uniqueid_args() {
   }
 
   virtual ~Uniqueid_uniqueid_args() throw();
-  int32_t logid;
   UniqueidRequest request;
 
   _Uniqueid_uniqueid_args__isset __isset;
-
-  void __set_logid(const int32_t val);
 
   void __set_request(const UniqueidRequest& val);
 
   bool operator == (const Uniqueid_uniqueid_args & rhs) const
   {
-    if (!(logid == rhs.logid))
-      return false;
     if (!(request == rhs.request))
       return false;
     return true;
@@ -101,12 +95,11 @@ class Uniqueid_uniqueid_args {
 class Uniqueid_uniqueid_pargs {
  public:
 
-  static const char* ascii_fingerprint; // = "3E4EA75EE4645FBC17071FF4F3229B0A";
-  static const uint8_t binary_fingerprint[16]; // = {0x3E,0x4E,0xA7,0x5E,0xE4,0x64,0x5F,0xBC,0x17,0x07,0x1F,0xF4,0xF3,0x22,0x9B,0x0A};
+  static const char* ascii_fingerprint; // = "135D590DD05D92FC85C9D1104FF65196";
+  static const uint8_t binary_fingerprint[16]; // = {0x13,0x5D,0x59,0x0D,0xD0,0x5D,0x92,0xFC,0x85,0xC9,0xD1,0x10,0x4F,0xF6,0x51,0x96};
 
 
   virtual ~Uniqueid_uniqueid_pargs() throw();
-  const int32_t* logid;
   const UniqueidRequest* request;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
@@ -210,8 +203,8 @@ class UniqueidClient : virtual public UniqueidIf {
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> getOutputProtocol() {
     return poprot_;
   }
-  void uniqueid(UniqueidResponse& _return, const int32_t logid, const UniqueidRequest& request);
-  void send_uniqueid(const int32_t logid, const UniqueidRequest& request);
+  void uniqueid(UniqueidResponse& _return, const UniqueidRequest& request);
+  void send_uniqueid(const UniqueidRequest& request);
   void recv_uniqueid(UniqueidResponse& _return);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
@@ -261,13 +254,13 @@ class UniqueidMultiface : virtual public UniqueidIf {
     ifaces_.push_back(iface);
   }
  public:
-  void uniqueid(UniqueidResponse& _return, const int32_t logid, const UniqueidRequest& request) {
+  void uniqueid(UniqueidResponse& _return, const UniqueidRequest& request) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->uniqueid(_return, logid, request);
+      ifaces_[i]->uniqueid(_return, request);
     }
-    ifaces_[i]->uniqueid(_return, logid, request);
+    ifaces_[i]->uniqueid(_return, request);
     return;
   }
 

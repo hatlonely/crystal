@@ -14,7 +14,7 @@ UniqueidHandler::UniqueidHandler() {
     context = Context::instance();
 }
 
-void UniqueidHandler::uniqueid(UniqueidResponse &response, const int32_t logid, const UniqueidRequest &request) {
+void UniqueidHandler::uniqueid(UniqueidResponse &response, const UniqueidRequest &request) {
     std::cout << ToString(request) << std::endl;
     int32_t serial = request.serial;
     int64_t length = request.length;
