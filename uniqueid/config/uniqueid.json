@@ -2,5 +2,7 @@
     "server_port": 9090,
     "worker_count": 10,
     "serials_size": 10,
-    "serials_file": "./serials_file"
+    "serials_file": "./serials_file",
+    "log_file": "./log/uniqueid.log.",
+    "log_wf_file": "./log/uniqueid.log.wf."
 }
