@@ -1,0 +1,6 @@
+{
+    "server_port": 9090,
+    "worker_count": 10,
+    "serials_size": 10,
+    "serials_file": "./serials_file"
+}

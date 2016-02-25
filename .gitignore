@@ -1,0 +1,7 @@
+build/
+.DS_Store
+*.xcodeproj/
+xcode/
+.idea/
+node_modules/
+.cache/
