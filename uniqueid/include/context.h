@@ -13,11 +13,14 @@
 #include <string>
 #include <thread>
 #include <boost/property_tree/ptree.hpp>
+#include <boost/filesystem.hpp>
 
 namespace uniqueid {
 
 class Context {
 public:
+    int init();
+
     static Context *instance() {
         static Context *context = new Context();
         return context;
@@ -34,13 +37,14 @@ public:
     bool set_max_id(int32_t serial, int64_t max_id);
 
 private:
-    Context();
+    Context() = default;
+    Context(const Context&) = delete;
     ~Context();
 
 private:
     boost::property_tree::ptree _config;
     std::vector<int64_t> _max_ids;
-    std::string _serials_file;
+    boost::filesystem::path _serials_file_path;
 };
 
 }

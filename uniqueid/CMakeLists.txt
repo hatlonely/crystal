@@ -27,11 +27,12 @@ ADD_DEFINITIONS(
 ADD_EXECUTABLE(uniqueid_server ${UNIQUEID_SERVER})
 ADD_EXECUTABLE(uniqueid_client ${UNIQUEID_CLIENT})
 
-TARGET_LINK_LIBRARIES(uniqueid_server thrift boost_filesystem boost_system)
-TARGET_LINK_LIBRARIES(uniqueid_client thrift boost_filesystem boost_system)
+TARGET_LINK_LIBRARIES(uniqueid_server thrift boost_filesystem boost_system glog)
+TARGET_LINK_LIBRARIES(uniqueid_client thrift boost_filesystem boost_system glog)
 
 ADD_CUSTOM_COMMAND(
     TARGET uniqueid_server
     POST_BUILD
     COMMAND cp -r ${UNIQUEID_SOURCE_DIR}/config ${UNIQUEID_BINARY_DIR}
+    COMMAND mkdir -p ${UNIQUEID_BINARY_DIR}/log
 )

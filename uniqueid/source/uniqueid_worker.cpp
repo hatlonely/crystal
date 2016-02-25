@@ -7,6 +7,7 @@
 //
 
 #include "uniqueid_worker.h"
+#include <glog/logging.h>
 
 namespace uniqueid {
 
@@ -15,7 +16,6 @@ UniqueidHandler::UniqueidHandler() {
 }
 
 void UniqueidHandler::uniqueid(UniqueidResponse &response, const UniqueidRequest &request) {
-    std::cout << ToString(request) << std::endl;
     int32_t serial = request.serial;
     int64_t length = request.length;
     std::vector<int64_t> &max_ids = context->get_max_ids();
@@ -24,10 +24,16 @@ void UniqueidHandler::uniqueid(UniqueidResponse &response, const UniqueidRequest
     response.offset = max_ids[serial];
     response.length = length;
     if (!context->set_max_id(serial, max_ids[serial] + length)) {
-        std::cout << "set max id falied." << std::endl;
+        LOG(FATAL) << "[logid: " << (uint32_t)request.logid << "] set max id failed.";
+        UniqueidException ue;
+        ue.status = ResStatus::kRSFail;
+        ue.what = "set max id failed.";
+        throw ue;
     }
 
-    std::cout << ToString(response) << std::endl;
+    LOG(INFO) << "logid [" << (uint32_t)request.logid
+            << "], request [" << ToString(request)
+            << "], response [" << ToString(response) << "]";
 }
 
 }

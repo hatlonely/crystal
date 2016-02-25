@@ -10,6 +10,8 @@
 #define UNIQUEID_COMMON_H
 
 #include <string>
+#include <glog/logging.h>
+#include <glog/raw_logging.h>
 #include "gen-cpp/Uniqueid.h"
 
 namespace uniqueid {

@@ -20,6 +20,7 @@
 #include <thrift/transport/TSocket.h>
 #include <thrift/transport/TTransportUtils.h>
 #include <thrift/TToString.h>
+#include <glog/logging.h>
 
 #include "gen-cpp/Uniqueid.h"
 #include "common.h"
@@ -41,6 +42,18 @@ int main(int argc, const char * argv[]) {
     typedef ::apache::thrift::concurrency::ThreadManager ThreadManager;
     typedef ::apache::thrift::concurrency::ThreadFactory ThreadFactory;
     typedef ::apache::thrift::concurrency::PlatformThreadFactory PlatformThreadFactory;
+    
+    google::InitGoogleLogging(argv[0]);
+    fLI::FLAGS_max_log_size = 1024;
+    google::SetLogDestination(google::FATAL, "./log/uniqueid.log.wf.");
+    google::SetLogDestination(google::INFO, "./log/uniqueid.log.");
+    fLI::FLAGS_logbufsecs = 0;
+    google::SetStderrLogging(google::INFO);
+    
+    if (uniqueid::Context::instance()->init() != 0) {
+        LOG(FATAL) << "context init failed.";
+        return -1;
+    }
 
     boost::property_tree::ptree &config = uniqueid::Context::instance()->get_config();
     const int server_port  = config.get<int32_t>("server_port");
@@ -57,6 +70,8 @@ int main(int argc, const char * argv[]) {
     boost::shared_ptr<TProtocolFactory> protocol_factory      = boost::make_shared<TBinaryProtocolFactory>();
     TThreadPoolServer server(processor, server_transport, transport_factory, protocol_factory, thread_manager);
     server.serve();
+    
+    google::ShutdownGoogleLogging();
 
     return 0;
 }

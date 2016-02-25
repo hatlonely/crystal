@@ -12,24 +12,30 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
+#include <glog/logging.h>
 #include "common.h"
 
 namespace uniqueid {
-
-Context::Context() {
+    
+int Context::init() {
+    static bool is_inited = false;
+    if (is_inited) {
+        return 0;
+    }
+    
     boost::filesystem::ifstream ifs(kConfigPath);
     if (!ifs.good()) {
-        std::cout << "open config file failed." << std::endl;
+        LOG(FATAL) << "open config file [" << kConfigPath << "] failed.";
+        return -1;
     }
     boost::property_tree::read_json(ifs, _config);
-
+    
     int32_t serials_size = _config.get<int32_t>("serials_size");
     _max_ids = std::vector<int64_t>(serials_size, 0);
-
-    _serials_file = _config.get<std::string>("serials_file");
-    boost::filesystem::path path(_serials_file);
-    if (!boost::filesystem::exists(path)) {
-        boost::filesystem::ofstream serials_file(path, std::ios::binary);
+    
+    _serials_file_path = _config.get<std::string>("serials_file");
+    if (!boost::filesystem::exists(_serials_file_path)) {
+        boost::filesystem::ofstream serials_file(_serials_file_path, std::ios::binary);
         if (!serials_file.good()) {
             throw new std::exception();
         }
@@ -39,43 +45,45 @@ Context::Context() {
         }
         serials_file.close();
     }
-
-    if (boost::filesystem::file_size(path) < serials_size * sizeof(int64_t)) {
-        boost::filesystem::ofstream serials_file(path, std::ios::binary | std::ios::app);
+    
+    if (boost::filesystem::file_size(_serials_file_path) < serials_size * sizeof(int64_t)) {
+        boost::filesystem::ofstream serials_file(_serials_file_path, std::ios::binary | std::ios::app);
         if (!serials_file.good()) {
-            std::cout << "open serials file failed." << std::endl;
-            throw new std::exception();
+            LOG(FATAL) << "open serials file [" << _serials_file_path.string() << "] failed.";
+            return -1;
         }
         char zero = 0;
-        for (int i = boost::filesystem::file_size(path); i < serials_size * sizeof(int64_t); i++) {
+        for (int i = boost::filesystem::file_size(_serials_file_path); i < serials_size * sizeof(int64_t); i++) {
             serials_file.write(&zero, sizeof(zero));
         }
         serials_file.close();
     }
-
+    
     {
-        boost::filesystem::ifstream serials_file(path, std::ios::binary);
+        boost::filesystem::ifstream serials_file(_serials_file_path, std::ios::binary);
         if (!serials_file.good()) {
-            std::cout << "open serials file failed." << std::endl;
-            throw new std::exception();
-        }
+            LOG(FATAL) << "open serials file [" << _serials_file_path.string() << "] failed.";
+            return -1;        }
         for (int i = 0; i < serials_size; i++) {
             serials_file.read((char *)&_max_ids[i], sizeof(int64_t));
         }
         serials_file.close();
     }
+    
+    is_inited = true;
+    
+    return 0;
 }
 
 bool Context::set_max_id(int32_t serial, int64_t max_id) {
     if (serial < 0 || serial >= _max_ids.size()) {
-        std::cout << "serial not found" << std::endl;
+        LOG(WARNING) << "serial [" << serial << "] not found";
         return false;
     }
 
-    boost::filesystem::path path(_serials_file);
-    boost::filesystem::fstream serials_file(path, std::ios::binary | std::ios::in | std::ios::out);
+    boost::filesystem::fstream serials_file(_serials_file_path, std::ios::binary | std::ios::in | std::ios::out);
     if (!serials_file.good()) {
-        std::cout << "open serials_file failed.";
+        LOG(FATAL) << "open serials file [" << _serials_file_path.string() << "] failed.";
         return false;
     }
 
