@@ -8,7 +8,6 @@
 
 #include "context.h"
 #include <fstream>
-#include <exception>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
@@ -44,7 +43,8 @@ int Context::init() {
     if (!boost::filesystem::exists(_serials_file_path)) {
         boost::filesystem::ofstream serials_file(_serials_file_path, std::ios::binary);
         if (!serials_file.good()) {
-            throw new std::exception();
+            LOG(FATAL) << "open serials file [" << _serials_file_path.string() << "] failed.";
+            return -1;
         }
         int64_t max_id = 0;
         for (int i = 0; i < serials_size; i++) {
