@@ -30,6 +30,13 @@ int Context::init() {
     }
     boost::property_tree::read_json(ifs, _config);
     
+    _mutexs_size = _config.get<uint32_t>("mutexs_size");
+    _mutexs = new (std::nothrow)std::mutex[_mutexs_size];
+    if (_mutexs == nullptr) {
+        LOG(FATAL) << "alloc mutexs failed.";
+        return -1;
+    }
+    
     int32_t serials_size = _config.get<int32_t>("serials_size");
     _max_ids = std::vector<int64_t>(serials_size, 0);
     

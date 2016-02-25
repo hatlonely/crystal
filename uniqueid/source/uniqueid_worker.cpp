@@ -18,6 +18,7 @@ UniqueidHandler::UniqueidHandler() {
 void UniqueidHandler::uniqueid(UniqueidResponse &response, const UniqueidRequest &request) {
     int32_t serial = request.serial;
     int64_t length = request.length;
+    std::lock_guard<std::mutex>(context->get_mutexs(serial));
     std::vector<int64_t> &max_ids = context->get_max_ids();
 
     response.serial = serial;

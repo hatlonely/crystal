@@ -26,6 +26,14 @@ public:
         return context;
     }
 
+    std::mutex &get_mutexs(int32_t serial) {
+        return _mutexs[serial % _mutexs_size];
+    }
+
+    size_t get_mutexs_size() {
+        return _mutexs_size;
+    }
+
     std::vector<int64_t> &get_max_ids() {
         return _max_ids;
     }
@@ -37,13 +45,15 @@ public:
     bool set_max_id(int32_t serial, int64_t max_id);
 
 private:
-    Context() = default;
+    Context() : _mutexs(nullptr), _mutexs_size(0) {}
     Context(const Context&) = delete;
     ~Context();
 
 private:
     boost::property_tree::ptree _config;
     std::vector<int64_t> _max_ids;
+    std::mutex *_mutexs;
+    size_t _mutexs_size;
     boost::filesystem::path _serials_file_path;
 };
 
