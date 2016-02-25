@@ -27,8 +27,8 @@ ADD_DEFINITIONS(
 ADD_EXECUTABLE(uniqueid_server ${UNIQUEID_SERVER})
 ADD_EXECUTABLE(uniqueid_client ${UNIQUEID_CLIENT})
 
-TARGET_LINK_LIBRARIES(uniqueid_server thrift boost_filesystem boost_system glog)
-TARGET_LINK_LIBRARIES(uniqueid_client thrift boost_filesystem boost_system glog)
+TARGET_LINK_LIBRARIES(uniqueid_server thrift boost_filesystem boost_system glog pthread)
+TARGET_LINK_LIBRARIES(uniqueid_client thrift boost_filesystem boost_system glog pthread)
 
 ADD_CUSTOM_COMMAND(
     TARGET uniqueid_server
