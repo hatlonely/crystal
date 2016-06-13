@@ -5,6 +5,10 @@
 //  Created by hatlonely on 16/6/13.
 //  Copyright © 2016年 hatlonely. All rights reserved.
 //
+//  线程安全阻塞队列，提供和java BlockingQueue 类似的接口
+//  其实这个类在实际生产中的作用并不是很大，因为在大多数场景下 boost::lockfree::queue 提供更高效的解决方案
+//  这里主要用于学习，了解线程安全相关概念，mutex，condition_variable 相关用法
+//
 
 #pragma once
 
@@ -46,10 +50,10 @@ public:
         }
         _list.push_back(element);
         _not_empty.notify_one();
-        
+
         return true;
     }
-    
+
     bool poll(Element& element, uint64_t timeout_us) {
         boost::mutex::scoped_lock op_lock(_op_mutex);
         // 如果队列为空先释放_op_mutex，以便put和offer给队列中插入元素
@@ -59,7 +63,7 @@ public:
                 return false;
             }
         }
-        
+
         // 在从_not_empty被唤醒 到 拿到_op_mutex锁之间的时间内队列可能又空了
         // 此时直接返回false
         if (empty()) {
@@ -68,10 +72,10 @@ public:
         element = _list.front();
         _list.pop_front();
         _not_full.notify_one();
-        
+
         return true;
     }
-    
+
     void put(const Element& element) {
         boost::mutex::scoped_lock op_lock(_op_mutex);
         while (full()) {
@@ -80,7 +84,7 @@ public:
         _list.push_back(element);
         _not_empty.notify_one();
     }
-    
+
     void take(Element& element) {
         boost::mutex::scoped_lock op_lock(_op_mutex);
         while (empty()) {
@@ -90,29 +94,29 @@ public:
         _list.pop_front();
         _not_full.notify_one();
     }
-    
+
     bool full() {
         return _list.size() == _max_queue_size;
     }
-    
+
     bool empty() {
         return _list.empty();
     }
-    
+
     size_t size() {
         return _list.size();
     }
-    
+
 private:
     static const size_t kMaxQueueSize = 60000;
-    
+
     size_t _max_queue_size;
     std::list<Element> _list;
     boost::mutex _op_mutex;     // 所有对队列的操作都需要获得该锁
     boost::condition_variable _not_empty;   // 队列非空条件
     boost::condition_variable _not_full;    // 队列不满条件
 };
-    
+
 int main(int argc, const char* argv[]) {
     BlockingQueue<int> bq(10);
 
