@@ -28,21 +28,21 @@
 namespace uniqueid {
 
 class UniqueidHandler : virtual public UniqueidIf {
+    typedef ::apache::thrift::transport::TSocket TSocket;
 public:
-    UniqueidHandler();
+    UniqueidHandler(boost::shared_ptr<TSocket> sock) : _sock(sock) {}
     void uniqueid(UniqueidResponse &response, const UniqueidRequest &request);
-
 private:
-    Context *context;
+    boost::shared_ptr<TSocket> _sock;
 };
 
 class UniqueidCloneFactory : public ::uniqueid::UniqueidIfFactory {
 public:
     virtual ~UniqueidCloneFactory() {}
-    virtual ::uniqueid::UniqueidIf *getHandler(const ::apache::thrift::TConnectionInfo &connInfo) {
+    virtual ::uniqueid::UniqueidIf *getHandler(const ::apache::thrift::TConnectionInfo &conn_info) {
         typedef ::apache::thrift::transport::TSocket TSocket;
-        boost::shared_ptr<TSocket> sock = boost::dynamic_pointer_cast<TSocket>(connInfo.transport);
-        return new UniqueidHandler;
+        boost::shared_ptr<TSocket> sock = boost::dynamic_pointer_cast<TSocket>(conn_info.transport);
+        return new UniqueidHandler(sock);
     }
     virtual void releaseHandler(::uniqueid::UniqueidIf *handler) {
         delete handler;

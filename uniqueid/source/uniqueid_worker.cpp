@@ -11,11 +11,9 @@
 
 namespace uniqueid {
 
-UniqueidHandler::UniqueidHandler() {
-    context = Context::instance();
-}
-
 void UniqueidHandler::uniqueid(UniqueidResponse &response, const UniqueidRequest &request) {
+    Context *context = Context::instance();
+
     int32_t serial = request.serial;
     int64_t length = request.length;
     std::lock_guard<std::mutex>(context->get_mutexs(serial));
@@ -32,9 +30,10 @@ void UniqueidHandler::uniqueid(UniqueidResponse &response, const UniqueidRequest
         throw ue;
     }
 
-    LOG(INFO) << "logid [" << (uint32_t)request.logid
-            << "], request [" << ToString(request)
-            << "], response [" << ToString(response) << "]";
+    LOG(INFO) << "host [" << _sock->getPeerAddress() << ":" << _sock->getPeerPort() << "], "
+              << "logid [" << (uint32_t)request.logid << "], "
+              << "request [" << ToString(request) << "], "
+              << "response [" << ToString(response) << "]";
 }
 
 }
