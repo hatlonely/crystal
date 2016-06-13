@@ -1,0 +1,24 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+PROJECT(CODE_SNIPS)
+
+SET(CMAKE_VERBOSE_MAKEFILE OFF)
+SET(CMAKE_CXX_FLAGS "-g -std=c++11")
+
+SET(SOURCES join_to_string.hpp main.cpp)
+
+INCLUDE_DIRECTORIES(
+    "."
+    "/usr/local/include"
+)
+
+LINK_DIRECTORIES(
+    "/usr/local/lib"
+)
+
+ADD_EXECUTABLE(code_snips ${SOURCES})
+
+ADD_CUSTOM_COMMAND(
+    TARGET code_snips
+    POST_BUILD
+    COMMAND echo ${CODE_SNIPS_SOURCE_DIR}
+)
