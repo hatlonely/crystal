@@ -4,7 +4,7 @@ PROJECT(CODE_SNIPS)
 SET(CMAKE_VERBOSE_MAKEFILE OFF)
 SET(CMAKE_CXX_FLAGS "-g -std=c++11")
 
-SET(SOURCES join_to_string.hpp blocking_queue.hpp main.cpp)
+SET(SOURCES join_to_string.hpp blocking_queue.hpp blocking_unordered_map.hpp main.cpp)
 
 INCLUDE_DIRECTORIES(
     "."
