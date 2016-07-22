@@ -1,3 +1,9 @@
+// @file chinese_code.cpp
+// @desc c++支持unicode，结合宏定义可以写出一些有意思的代码
+// @auth hatlonely(hatlonely@gmail.com)
+// @vers 1.0
+// @date 2016-07-22
+
 #include <iostream>
 #include <string>
 
