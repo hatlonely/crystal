@@ -51,6 +51,7 @@ std::string HostIp(sa_family_t family=AF_INET) {
             void* address = &((struct sockaddr_in *)ifaddress->ifa_addr)->sin_addr;
             inet_ntop(AF_INET, address, ipbuffer, INET_ADDRSTRLEN);
             result = ipbuffer;
+            break;
         }
         ifaddress = ifaddress->ifa_next;
     }
