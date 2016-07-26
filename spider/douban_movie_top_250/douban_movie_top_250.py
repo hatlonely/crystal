@@ -51,7 +51,7 @@ def main():
     index = 0
     for movie in doubanMovieTop250.result():
         index += 1
-        print('{index}\t{0[star]}\t{0[chinese_name]}\t{0[quote]}'.format(movie, index=index))
+        print('{index}\t{0[star]}\t{0[chinese_name]}\t{0[quote]}\t{0[href]}'.format(movie, index=index))
 
 
 if __name__ == '__main__':
