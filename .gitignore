@@ -5,3 +5,4 @@ xcode/
 .idea/
 node_modules/
 .cache/
+*.bk
